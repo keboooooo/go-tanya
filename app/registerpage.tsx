@@ -160,12 +160,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   brandName: {
-    fontSize: 48,
+    fontSize: 60,
     fontWeight: "bold",
     color: "#000",
   },
   formContainer: {
-    flex: 2,
+    flex: 1.3,
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
