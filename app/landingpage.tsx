@@ -28,13 +28,13 @@ interface QuestionItem {
 const RECENT_QUESTIONS_DATA: QuestionItem[] = [
   {
     id: "1",
-    title: "RPL",
+    title: "Rekayasa Perangkat Lunak",
     likes: 19,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis, turpis ac gravida semper, nisi nisi viverra leo",
   },
   {
     id: "2",
-    title: "PBP",
+    title: "Pemrograman Berbasis Platform",
     likes: 19,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis, turpis ac gravida semper, nisi nisi viverra leo",
   },
@@ -49,13 +49,13 @@ const RECENT_QUESTIONS_DATA: QuestionItem[] = [
 const RECENT_ANSWERED_DATA: QuestionItem[] = [
   {
     id: "4",
-    title: "RPL",
+    title: "Rekayasa Perangkat Lunak",
     likes: 19,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis, turpis ac gravida semper, nisi nisi viverra leo",
   },
   {
     id: "5",
-    title: "PBP",
+    title: "Pemrograman Berbasis Platform",
     likes: 19,
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis, turpis ac gravida semper, nisi nisi viverra leo",
   },
@@ -65,20 +65,23 @@ const RECENT_ANSWERED_DATA: QuestionItem[] = [
 
 // Question Card Component
 const QuestionCard: React.FC<{ item: QuestionItem }> = ({ item }) => (
-  <View style={styles.card}>
+  <TouchableOpacity
+    style={styles.card}
+    onPress={() => console.log(`Card pressed: ${item.title}`)}
+    activeOpacity={0.7} // This makes the press animation more subtle
+  >
     <View style={styles.cardHeader}>
       <Ionicons name="person-circle" size={32} color="#4A4A4A" />
       <Text style={styles.cardTitle}>{item.title}</Text>
       <View style={styles.cardLikesContainer}>
-        <Ionicons name="heart" size={18} color="#FF6347" />{" "}
-        {/* Tomato Red for heart */}
-        <Text style={styles.cardLikesText}>{item.likes}</Text>
+        <Ionicons name="heart" size={18} color="#FF6347" />
+        <Text style={styles.cardLikesText}> {item.likes}</Text>
       </View>
     </View>
     <Text style={styles.cardText} numberOfLines={3} ellipsizeMode="tail">
       {item.text}
     </Text>
-  </View>
+  </TouchableOpacity>
 );
 
 // Section Component for "Recent Question" and "Recent Answered"
