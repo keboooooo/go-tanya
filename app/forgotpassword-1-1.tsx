@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons"; // Using Feather for the user icon
 import { useRouter } from "expo-router"; // Import useRouter
 import React, { useState } from "react";
 import {
+  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -21,13 +22,21 @@ export default function App() {
   const router = useRouter(); // Initialize router
 
   const handleSendOtp = () => {
-    // TODO: Implement OTP sending logic
-    console.log("Send OTP to:", email);
-    if (!email) {
-      alert("Please enter your email address.");
+    // Validate email
+    if (!email.trim()) {
+      Alert.alert(
+        "Email Required",
+        "Please enter your email address to receive the OTP.",
+        [{ text: "OK" }]
+      );
       return;
     }
-    alert(`OTP request sent to ${email}`);
+
+    // Log the action
+    console.log("Send OTP to:", email);
+
+    // Navigate to the next screen
+    router.push("/forgotpassword-1-2");
   };
 
   const handleSignIn = () => {
@@ -111,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 72, // Made it larger
     fontWeight: "bold", // Less bold, more like the image
     color: "#000000",
-    lineHeight: 85, // Adjust line height for closer text
+    // lineHeight: 85, // Adjust line height for closer text
   },
   formContainer: {
     flex: 1, // Takes remaining space
@@ -162,7 +171,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sendOtpButton: {
-    backgroundColor: "#0A072D", // Dark blue/almost black
+    backgroundColor: "#141330", // Dark blue/almost black
     paddingVertical: 15,
     borderRadius: 25, // More rounded
     alignItems: "center",
@@ -171,7 +180,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   sendOtpButtonText: {
-    color: "#FACC15", // Yellowish gold
+    color: "#ffd700", // Yellowish gold
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -187,7 +196,7 @@ const styles = StyleSheet.create({
   },
   signInLinkText: {
     fontSize: 14,
-    color: "#EF4444", // Reddish pink
+    color: "#ff6347", // Reddish pink
     fontWeight: "bold",
   },
 });
