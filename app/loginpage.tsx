@@ -19,6 +19,8 @@ const LoginScreen: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
   const router = useRouter();
 
   const togglePasswordVisibility = (): void => {
@@ -27,6 +29,37 @@ const LoginScreen: React.FC = () => {
 
   const handleSignUp = (): void => {
     router.push("/registerpage");
+  };
+
+  const validateForm = (): boolean => {
+    let isValid = true;
+
+    // Reset error messages
+    setUsernameError("");
+    setPasswordError("");
+
+    // Validate username/email
+    if (!username.trim()) {
+      setUsernameError("Please enter your username or email");
+      isValid = false;
+    }
+
+    // Validate password
+    if (!password.trim()) {
+      setPasswordError("Please enter your password");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSignIn = (): void => {
+    if (validateForm()) {
+      // If validation passes, proceed with sign in
+      console.log("Sign in with:", { username, password });
+      // Here you would typically call your authentication API
+      router.push("/landingpage");
+    }
   };
 
   return (
@@ -47,12 +80,20 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.signInText}>Sign In</Text>
 
             <Text style={styles.inputLabel}>Username/email</Text>
-            <View style={styles.inputContainer}>
+            <View
+              style={[
+                styles.inputContainer,
+                usernameError ? styles.inputError : null,
+              ]}
+            >
               <TextInput
                 style={styles.input}
                 placeholder="example@gmail.com"
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={(text) => {
+                  setUsername(text);
+                  if (text.trim()) setUsernameError("");
+                }}
                 autoCapitalize="none"
                 keyboardType="email-address"
               />
@@ -63,14 +104,25 @@ const LoginScreen: React.FC = () => {
                 style={styles.inputIcon}
               />
             </View>
+            {usernameError ? (
+              <Text style={styles.errorText}>{usernameError}</Text>
+            ) : null}
 
             <Text style={styles.inputLabel}>Password</Text>
-            <View style={styles.inputContainer}>
+            <View
+              style={[
+                styles.inputContainer,
+                passwordError ? styles.inputError : null,
+              ]}
+            >
               <TextInput
                 style={styles.input}
                 placeholder="password"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (text.trim()) setPasswordError("");
+                }}
                 secureTextEntry={!isPasswordVisible}
               />
               <TouchableOpacity onPress={togglePasswordVisibility}>
@@ -82,12 +134,18 @@ const LoginScreen: React.FC = () => {
                 />
               </TouchableOpacity>
             </View>
+            {passwordError ? (
+              <Text style={styles.errorText}>{passwordError}</Text>
+            ) : null}
 
             <TouchableOpacity style={styles.forgotPasswordContainer}>
               <Text style={styles.forgotPasswordText}>Forgot password?</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.signInButton}>
+            <TouchableOpacity
+              style={styles.signInButton}
+              onPress={handleSignIn}
+            >
               <Text style={styles.signInButtonText}>Sign In</Text>
             </TouchableOpacity>
 
@@ -157,7 +215,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 12,
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 5,
+  },
+  inputError: {
+    borderColor: "#FF6347", // Tomato red for error state
+  },
+  errorText: {
+    color: "#FF6347",
+    fontSize: 12,
+    marginBottom: 10,
+    marginLeft: 5,
   },
   input: {
     flex: 1,
