@@ -23,6 +23,13 @@ const RegisterScreen: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState<boolean>(false);
+
+  // Error states for validation
+  const [emailError, setEmailError] = useState<string>("");
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
+
   const router = useRouter();
 
   const togglePasswordVisibility = (): void => {
@@ -35,6 +42,60 @@ const RegisterScreen: React.FC = () => {
 
   const handleSignIn = (): void => {
     router.push("/loginpage");
+  };
+
+  const validateForm = (): boolean => {
+    let isValid = true;
+
+    // Reset all error messages
+    setEmailError("");
+    setUsernameError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+
+    // Validate email
+    if (!email.trim()) {
+      setEmailError("Please enter your email");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      isValid = false;
+    }
+
+    // Validate username
+    if (!username.trim()) {
+      setUsernameError("Please enter a username");
+      isValid = false;
+    }
+
+    // Validate password
+    if (!password.trim()) {
+      setPasswordError("Please enter a password");
+      isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      isValid = false;
+    }
+
+    // Validate confirm password
+    if (!confirmPassword.trim()) {
+      setConfirmPasswordError("Please confirm your password");
+      isValid = false;
+    } else if (confirmPassword !== password) {
+      setConfirmPasswordError("Passwords do not match");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSignUp = (): void => {
+    if (validateForm()) {
+      // If validation passes, proceed with registration
+      console.log("Sign up with:", { email, username, password });
+      // Here you would typically call your registration API
+      router.push("/register-1-2");
+    }
   };
 
   return (
@@ -55,12 +116,20 @@ const RegisterScreen: React.FC = () => {
             <Text style={styles.signUpText}>Sign Up</Text>
 
             <Text style={styles.inputLabel}>Email</Text>
-            <View style={styles.inputContainer}>
+            <View
+              style={[
+                styles.inputContainer,
+                emailError ? styles.inputError : null,
+              ]}
+            >
               <TextInput
                 style={styles.input}
                 placeholder="example@gmail.com"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  if (text.trim()) setEmailError("");
+                }}
                 autoCapitalize="none"
                 keyboardType="email-address"
               />
@@ -71,14 +140,25 @@ const RegisterScreen: React.FC = () => {
                 style={styles.inputIcon}
               />
             </View>
+            {emailError ? (
+              <Text style={styles.errorText}>{emailError}</Text>
+            ) : null}
 
             <Text style={styles.inputLabel}>Username</Text>
-            <View style={styles.inputContainer}>
+            <View
+              style={[
+                styles.inputContainer,
+                usernameError ? styles.inputError : null,
+              ]}
+            >
               <TextInput
                 style={styles.input}
                 placeholder="Username"
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={(text) => {
+                  setUsername(text);
+                  if (text.trim()) setUsernameError("");
+                }}
                 autoCapitalize="none"
               />
               <Feather
@@ -88,14 +168,25 @@ const RegisterScreen: React.FC = () => {
                 style={styles.inputIcon}
               />
             </View>
+            {usernameError ? (
+              <Text style={styles.errorText}>{usernameError}</Text>
+            ) : null}
 
             <Text style={styles.inputLabel}>Password</Text>
-            <View style={styles.inputContainer}>
+            <View
+              style={[
+                styles.inputContainer,
+                passwordError ? styles.inputError : null,
+              ]}
+            >
               <TextInput
                 style={styles.input}
                 placeholder="password"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (text.trim()) setPasswordError("");
+                }}
                 secureTextEntry={!isPasswordVisible}
               />
               <TouchableOpacity onPress={togglePasswordVisibility}>
@@ -107,14 +198,25 @@ const RegisterScreen: React.FC = () => {
                 />
               </TouchableOpacity>
             </View>
+            {passwordError ? (
+              <Text style={styles.errorText}>{passwordError}</Text>
+            ) : null}
 
             <Text style={styles.inputLabel}>Confirm Password</Text>
-            <View style={styles.inputContainer}>
+            <View
+              style={[
+                styles.inputContainer,
+                confirmPasswordError ? styles.inputError : null,
+              ]}
+            >
               <TextInput
                 style={styles.input}
                 placeholder="password"
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  if (text.trim()) setConfirmPasswordError("");
+                }}
                 secureTextEntry={!isConfirmPasswordVisible}
               />
               <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
@@ -126,8 +228,14 @@ const RegisterScreen: React.FC = () => {
                 />
               </TouchableOpacity>
             </View>
+            {confirmPasswordError ? (
+              <Text style={styles.errorText}>{confirmPasswordError}</Text>
+            ) : null}
 
-            <TouchableOpacity style={styles.signUpButton}>
+            <TouchableOpacity
+              style={styles.signUpButton}
+              onPress={handleSignUp}
+            >
               <Text style={styles.signUpButtonText}>Sign Up</Text>
             </TouchableOpacity>
 
@@ -196,7 +304,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 12,
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 5,
+  },
+  inputError: {
+    borderColor: "#FF6347", // Tomato red for error state
+  },
+  errorText: {
+    color: "#FF6347",
+    fontSize: 12,
+    marginBottom: 10,
+    marginLeft: 5,
   },
   input: {
     flex: 1,
