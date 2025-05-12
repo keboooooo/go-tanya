@@ -1,7 +1,9 @@
 // src/screens/ForgotPasswordScreen.tsx
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // For the key icon
+import { useRouter } from "expo-router"; // Import useRouter for navigation
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -20,6 +22,7 @@ const ForgotPasswordScreen: React.FC = () => {
   const [otp, setOtp] = useState<string>("");
   const [timer, setTimer] = useState<number>(60);
   const [canResend, setCanResend] = useState<boolean>(false);
+  const router = useRouter(); // Initialize router for navigation
 
   useEffect(() => {
     let interval: NodeJS.Timeout | number;
@@ -43,8 +46,39 @@ const ForgotPasswordScreen: React.FC = () => {
   };
 
   const handleVerifyOtp = () => {
+    // Check if OTP is empty
+    if (!otp.trim()) {
+      Alert.alert(
+        "OTP Required",
+        "Please enter the verification code to continue.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
+    // Check if OTP is exactly 6 digits
+    if (otp.length < 6) {
+      Alert.alert(
+        "Invalid OTP",
+        "Please enter a complete 6-digit verification code.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
+    // Check if OTP contains only numbers
+    if (!/^\d+$/.test(otp)) {
+      Alert.alert("Invalid OTP", "OTP should contain only numbers.", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
     console.log("Verifying OTP:", otp);
-    // Add actual OTP verification logic here
+    // In a real app, you would validate the OTP with your backend here
+
+    // Navigate to the next screen for setting new password
+    router.push("/forgotpassword-1-3");
   };
 
   const formatTime = (seconds: number): string => {
