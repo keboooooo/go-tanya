@@ -31,6 +31,10 @@ const LoginScreen: React.FC = () => {
     router.push("/registerpage");
   };
 
+  const handleForgotPassword = (): void => {
+    router.push("/forgotpassword-1-1");
+  };
+
   const validateForm = (): boolean => {
     let isValid = true;
 
@@ -138,7 +142,10 @@ const LoginScreen: React.FC = () => {
               <Text style={styles.errorText}>{passwordError}</Text>
             ) : null}
 
-            <TouchableOpacity style={styles.forgotPasswordContainer}>
+            <TouchableOpacity
+              style={styles.forgotPasswordContainer}
+              onPress={handleForgotPassword}
+            >
               <Text style={styles.forgotPasswordText}>Forgot password?</Text>
             </TouchableOpacity>
 
@@ -183,7 +190,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     // flex: 1,
-    height: 550,
+    height: 530,
     // position: "relative",
     // bottom: -400,
     backgroundColor: "#fff",
@@ -209,13 +216,14 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: "row",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 50,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
     alignItems: "center",
-    marginBottom: 5,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#D0D0D0",
+    borderRadius: 25, // More rounded
+    height: 50,
+    paddingHorizontal: 15,
+    marginBottom: 15,
   },
   inputError: {
     borderColor: "#FF6347", // Tomato red for error state

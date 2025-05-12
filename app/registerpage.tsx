@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   formContainer: {
-    flex: 1.3,
+    flex: 1.1,
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -298,13 +298,14 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: "row",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
     alignItems: "center",
-    marginBottom: 5,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#D0D0D0",
+    borderRadius: 25, // More rounded
+    height: 50,
+    paddingHorizontal: 15,
+    marginBottom: 15,
   },
   inputError: {
     borderColor: "#FF6347", // Tomato red for error state
