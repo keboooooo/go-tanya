@@ -19,35 +19,31 @@ import {
 interface EducationLevel {
   id: string;
   label: string;
-  imageSource: ImageSourcePropType; // Using ImageSourcePropType for network or local images
+  imageSource: ImageSourcePropType;
 }
 
-// --- PLACEHOLDER IMAGE URLS ---
-const placeholderBaseUrl = "https://via.placeholder.com/";
-const imageSize = "100x100"; // You can adjust the size
-const elementaryPlaceholder = `${placeholderBaseUrl}${imageSize}/FFC0CB/000000?Text=Elementary`;
-const juniorHighPlaceholder = `${placeholderBaseUrl}${imageSize}/ADD8E6/000000?Text=Junior+HS`;
-const seniorHighPlaceholder = `${placeholderBaseUrl}${imageSize}/90EE90/000000?Text=Senior+HS`;
-const collegePlaceholder = `${placeholderBaseUrl}${imageSize}/FFFFE0/000000?Text=College`;
-// --- END PLACEHOLDER IMAGE URLS ---
-
+// Using local images from assets folder instead of placeholder URLs
 const educationLevelsData: EducationLevel[] = [
   {
     id: "elementary",
     label: "Elementary School",
-    imageSource: { uri: elementaryPlaceholder },
+    imageSource: require("../assets/images/elementary.png"),
   },
   {
     id: "junior_high",
     label: "Junior High School",
-    imageSource: { uri: juniorHighPlaceholder },
+    imageSource: require("../assets/images/junior_high.png"),
   },
   {
     id: "senior_high",
     label: "Senior High School",
-    imageSource: { uri: seniorHighPlaceholder },
+    imageSource: require("../assets/images/senior_high.png"),
   },
-  { id: "college", label: "College", imageSource: { uri: collegePlaceholder } },
+  {
+    id: "college",
+    label: "College",
+    imageSource: require("../assets/images/college.png"),
+  },
 ];
 
 const { height } = Dimensions.get("window");
@@ -206,7 +202,7 @@ const styles = StyleSheet.create({
     height: 70, // Original image size
     resizeMode: "contain",
     marginBottom: 10,
-    backgroundColor: "#f0f0f0", // A light background for the placeholder image area
+    // backgroundColor: "#f0f0f0", // A light background for the placeholder image area
   },
   levelLabel: {
     fontSize: 13,
