@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
-    backgroundColor: '#A0E0FF', // Light blue
+    backgroundColor: '#b3e0ff', // Light blue
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -134,6 +134,10 @@ export default function App() {
     router.push("/askaquestion"); // Navigate to the ask a question page
   };
 
+  const handleSearchQuestionPress = () => {
+    router.push("/searchaquestion"); // Navigate to the search a question page
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#A0D2EB" />
@@ -178,7 +182,7 @@ export default function App() {
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => console.log("Search Question Pressed")}
+            onPress={handleSearchQuestionPress}
           >
             <View style={styles.actionButtonIconBg}>
               <Ionicons name="search-outline" size={32} color="#000" />
