@@ -2,6 +2,7 @@
 // All components (App, Section, QuestionCard) are defined in this single file.
 
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router"; // Import useRouter for navigation
 import React from "react";
 import {
   FlatList,
@@ -109,6 +110,12 @@ const Section: React.FC<{ title: string; data: QuestionItem[] }> = ({
 
 // --- Main App Component ---
 export default function App() {
+  const router = useRouter(); // Initialize router for navigation
+
+  const handleProfilePress = () => {
+    router.push("/profilepage"); // Navigate to the profile page
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#A0D2EB" />
@@ -125,7 +132,7 @@ export default function App() {
           </View>
           <TouchableOpacity
             style={styles.profileIconContainer}
-            onPress={() => console.log("Profile Icon Pressed")}
+            onPress={handleProfilePress}
           >
             {/* Using a simple View for placeholder, replace with actual icon/image */}
             <Ionicons name="person-circle" size={50} color="#4A4A4A" />
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30, // Ensures space at the end of the scroll view
   },
   header: {
-    backgroundColor: "#A0D2EB", // Light blue color from image
+    backgroundColor: "#A0E0FF", // Light blue color from image
     paddingTop:
       Platform.OS === "android" ? StatusBar.currentHeight || 20 + 10 : 20, // Adjust for status bar on Android
     paddingHorizontal: 20,
