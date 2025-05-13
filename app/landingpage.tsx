@@ -130,6 +130,10 @@ export default function App() {
     router.push("/profilepage"); // Navigate to the profile page
   };
 
+  const handleAskQuestionPress = () => {
+    router.push("/askaquestion"); // Navigate to the ask a question page
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#A0D2EB" />
@@ -159,7 +163,7 @@ export default function App() {
         <View style={styles.actionCard}>
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => console.log("Ask Question Pressed")}
+            onPress={handleAskQuestionPress}
           >
             <View style={styles.actionButtonIconBg}>
               <MaterialCommunityIcons
