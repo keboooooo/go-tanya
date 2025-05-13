@@ -4,16 +4,16 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router'; // Import useRouter
 import React, { useState } from 'react';
 import {
-    Alert,
-    Image,
-    Platform,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const MAX_DESC_LENGTH = 2000;
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
-    backgroundColor: '#b3e0ff', // Light blue
+    backgroundColor: '#A0D2EB', // Light blue
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

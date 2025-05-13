@@ -135,7 +135,7 @@ export default function App() {
   };
 
   const handleSearchQuestionPress = () => {
-    router.push("/searchaquestion"); // Navigate to the search a question page
+    router.push("/searchaquestionfix"); // Navigate to the search a question page
   };
 
   return (
