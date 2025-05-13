@@ -89,24 +89,38 @@ const QuestionCard: React.FC<{ item: QuestionItem }> = ({ item }) => (
 const Section: React.FC<{ title: string; data: QuestionItem[] }> = ({
   title,
   data,
-}) => (
-  <View style={styles.sectionContainer}>
-    <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <TouchableOpacity onPress={() => console.log(`See all ${title}`)}>
-        <Text style={styles.seeAllText}>See all</Text>
-      </TouchableOpacity>
+}) => {
+  const router = useRouter(); // Initialize router for navigation
+
+  const handleSeeAllPress = () => {
+    if (title === "Recent Question") {
+      router.push("/recentquestion");
+    } else if (title === "Recent Answered") {
+      router.push("/recentanswered"); // Assuming you have a recentanswered.tsx page
+    } else {
+      console.log(`See all ${title}`);
+    }
+  };
+
+  return (
+    <View style={styles.sectionContainer}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <TouchableOpacity onPress={handleSeeAllPress}>
+          <Text style={styles.seeAllText}>See all</Text>
+        </TouchableOpacity>
+      </View>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => <QuestionCard item={item} />}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.cardListContentContainer} // Ensures padding for the last item's shadow
+      />
     </View>
-    <FlatList
-      data={data}
-      renderItem={({ item }) => <QuestionCard item={item} />}
-      keyExtractor={(item) => item.id}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.cardListContentContainer} // Ensures padding for the last item's shadow
-    />
-  </View>
-);
+  );
+};
 
 // --- Main App Component ---
 export default function App() {
