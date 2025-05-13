@@ -32,6 +32,17 @@ export default function App() {
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert(
+        "Invalid Email",
+        "Please enter a valid email address.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
     // Log the action
     console.log("Send OTP to:", email);
 
