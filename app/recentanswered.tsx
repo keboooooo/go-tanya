@@ -97,7 +97,20 @@ const AnsweredCard: React.FC<{ item: AnsweredItem }> = ({ item }) => {
   const router = useRouter(); // Initialize router
 
   const handleCardPress = () => {
-    router.push('/questionform'); // Navigate to questionform
+    router.push({
+      pathname: '/questionform',
+      params: {
+        id: item.id,
+        // Assuming item.title from recentquestion is the main question text for questionform
+        questionText: item.title, 
+        // Assuming item.body from recentquestion is the detailed content for questionform
+        contentText: item.body,  
+        likes: item.likes.toString(),
+        // categoryTitle: item.category, // If you have category in your item
+        // attachmentUri: item.actualUri, // If your item had a real URI
+        imagePlaceholder: item.imagePlaceholder?.toString() || 'false', // Pass as string
+      },
+    });
   };
 
   return (

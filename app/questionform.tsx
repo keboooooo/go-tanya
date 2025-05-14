@@ -1,8 +1,9 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router'; // Import useRouter
+import { useLocalSearchParams, useRouter } from 'expo-router'; // Import useLocalSearchParams
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
+  Image, // Ensure Image is imported
   Platform,
   StatusBar as ReactNativeStatusBar,
   SafeAreaView,
@@ -28,38 +29,43 @@ interface CommentData {
 
 interface PostData {
   id: string;
+  user: User; // Changed from author to user to match samplePost structure if it was a mistake
   categoryTitle: string;
-  author: User;
   questionText: string;
   contentText: string;
   likes: number;
   comments: CommentData[];
+  attachmentUri?: string;
+  imagePlaceholder?: boolean; // Added for placeholder logic
 }
 
-// Sample Data
+// Sample Data (can serve as a fallback or for structure)
+const sampleUser: User = { id: 'user123' }; // Define sampleUser if not already
 const samplePost: PostData = {
-  id: '1',
+  id: 'post1',
+  user: sampleUser,
   categoryTitle: 'Jaringan Komputer',
-  author: { id: 'user1' },
-  questionText: 'apa yang dimaksud dengan mikrotik?',
+  questionText: 'Apa yang dimaksud dengan Mikrotik?',
   contentText:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque eget diam vitae accumsan. Fusce sed risus in nisi semper malesuada quis sed sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis efficitur mauris quis nisl interdum elementum a varius lectus.',
-  likes: 19,
+    'Saya baru belajar jaringan dan sering mendengar istilah Mikrotik. Bisa tolong jelaskan apa itu Mikrotik, fungsi utamanya, dan mungkin contoh penggunaannya dalam skala kecil?',
+  likes: 193,
+  // attachmentUri: 'https://i.imgur.com/SYLSbCdb.jpg', // Example if URI is directly in sample
+  // imagePlaceholder: false, // Example
   comments: [
     {
-      id: 'c1',
-      user: { id: 'user2' },
-      questionText: 'apa yang dimaksud dengan mikrotik?',
+      id: 'comment1',
+      user: sampleUser,
+      questionText: 'Re: Apa yang dimaksud dengan Mikrotik?',
       commentText:
-        'Mikrotik adalah Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque eget diam vitae accumsan. Fusce sed risus in nisi semper malesuada quis sed sem.',
+        'Mikrotik itu sebenarnya nama perusahaan Latvia yang mengembangkan perangkat keras dan perangkat lunak untuk jaringan komputer. Produknya yang paling terkenal itu RouterOS dan RouterBOARD.',
       isLikedByCurrentUser: true,
     },
     {
-      id: 'c2',
-      user: { id: 'user3' },
-      questionText: 'apa yang dimaksud dengan mikrotik?',
+      id: 'comment2',
+      user: sampleUser,
+      questionText: 'Re: Apa yang dimaksud dengan Mikrotik?',
       commentText:
-        'Mikrotik adalah Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque eget diam vitae accumsan. Fusce sed risus in nisi semper malesuada quis sed sem.',
+        'Singkatnya, Mikrotik bisa dipakai buat ngatur bandwidth, firewall, VPN, hotspot, dan banyak lagi. Cocok buat warnet, kantor kecil, atau bahkan rumah kalau mau lebih advance.',
       isLikedByCurrentUser: false,
     },
   ],
@@ -147,11 +153,34 @@ const Comment: React.FC<CommentData> = ({
 };
 
 const App: React.FC = () => {
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
+  const params = useLocalSearchParams<{
+    // Define expected param types, all params from URL are strings initially
+    id?: string;
+    categoryTitle?: string;
+    questionText?: string;
+    contentText?: string;
+    likes?: string;
+    attachmentUri?: string;
+    imagePlaceholder?: string; // Will be 'true' or 'false' as a string
+  }>();
 
   const handleFabPress = () => {
-    router.push('/answerform'); // Navigate to answerform
+    router.push('/answerform');
   };
+
+  // Use params if available, otherwise fallback to samplePost or defaults
+  const displayCategoryTitle = params.categoryTitle || samplePost.categoryTitle;
+  const displayQuestionText = params.questionText || samplePost.questionText;
+  const displayContentText = params.contentText || samplePost.contentText;
+  const displayLikes = params.likes ? parseInt(params.likes, 10) : samplePost.likes;
+  
+  const displayAttachmentUri = params.attachmentUri;
+  // Convert string 'true'/'false' from params to boolean
+  const displayImagePlaceholder = params.imagePlaceholder === 'true';
+
+  // For comments, you might fetch them based on params.id or pass them if simple enough
+  // Here, we'll still use samplePost.comments for brevity for the comments section.
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -162,24 +191,38 @@ const App: React.FC = () => {
         contentContainerStyle={styles.scrollViewContent}
       >
         <View style={styles.mainCard}>
-          <Text style={styles.categoryTitle}>{samplePost.categoryTitle}</Text>
+          <Text style={styles.categoryTitle}>{displayCategoryTitle}</Text>
           
           <View style={styles.postContentContainer}>
             <View style={styles.postHeader}>
                 <Ionicons name="person-circle-outline" size={40} color="#555" style={styles.postAuthorIcon} />
-                <Text style={styles.postQuestionText}>{samplePost.questionText}</Text>
+                <Text style={styles.postQuestionText}>{displayQuestionText}</Text>
                 <View style={styles.likesContainer}>
                     <Ionicons name="heart" size={20} color="#FF6347" />
-                    <Text style={styles.likesCount}>{samplePost.likes}</Text>
+                    <Text style={styles.likesCount}>{displayLikes}</Text>
                 </View>
             </View>
-            <Text style={styles.postBodyText}>{samplePost.contentText}</Text>
+            <Text style={styles.postBodyText}>{displayContentText}</Text>
+            
+            {/* Conditional display for attachment/placeholder */}
+            {displayAttachmentUri ? (
+              <Image 
+                source={{ uri: displayAttachmentUri }} 
+                style={styles.postAttachmentImage} 
+              />
+            ) : displayImagePlaceholder ? (
+              <View style={styles.postAttachmentPlaceholder}>
+                <Ionicons name="image-outline" size={80} color="#B0B0B0" />
+                {/* You could add text here if desired, e.g., <Text>Attachment</Text> */}
+              </View>
+            ) : null}
           </View>
 
+          {/* Display comments (still using samplePost for this part) */}
           {samplePost.comments.map((comment) => (
             <Comment
               key={comment.id}
-              {...comment}
+              {...comment} // Spread the comment object as props
             />
           ))}
         </View>
@@ -279,6 +322,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555555',
     lineHeight: 20,
+    marginBottom: 10, // Ensure space if attachment/placeholder follows
+  },
+  postAttachmentImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginTop: 10,
+    resizeMode: 'cover',
+  },
+  postAttachmentPlaceholder: { // New style for the placeholder
+    width: '100%',
+    height: 150, 
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
   commentContainer: {
     flexDirection: 'row',
