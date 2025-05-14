@@ -1,11 +1,10 @@
-import { Feather, Ionicons } from '@expo/vector-icons'; // Import Feather
+import { Feather, Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router'; // Import useRouter
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react'; // Import useState
+import React, { useState } from 'react';
 import {
   Platform,
-  StatusBar as ReactNativeStatusBar // Alias to avoid conflict with Expo StatusBar component if used differently
-  ,
-
+  StatusBar as ReactNativeStatusBar,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -17,9 +16,6 @@ import {
 // Define types for our data
 interface User {
   id: string;
-  // We won't use name for the placeholder icon display explicitly in the component
-  // but it's good practice to have it in a real app.
-  // name: string;
 }
 
 interface CommentData {
@@ -27,14 +23,12 @@ interface CommentData {
   user: User;
   questionText: string;
   commentText: string;
-  isLikedByCurrentUser: boolean; // Initial state for the heart icon
-  // The image doesn't show counts for thumbs up/down on comments,
-  // so we'll just show the icons.
+  isLikedByCurrentUser: boolean;
 }
 
 interface PostData {
   id: string;
-  categoryTitle: string; // "Jaringan Komputer"
+  categoryTitle: string;
   author: User;
   questionText: string;
   contentText: string;
@@ -85,7 +79,7 @@ const Header: React.FC = () => {
 const Comment: React.FC<CommentData> = ({
   questionText,
   commentText,
-  isLikedByCurrentUser: initialIsLiked, // Rename prop for clarity
+  isLikedByCurrentUser: initialIsLiked,
 }) => {
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isThumbsUp, setIsThumbsUp] = useState(false);
@@ -93,7 +87,6 @@ const Comment: React.FC<CommentData> = ({
 
   const handleLike = () => {
     setIsLiked(!isLiked);
-    // If liked, ensure thumbs down is not active
     if (!isLiked) {
       setIsThumbsDown(false);
     }
@@ -101,7 +94,6 @@ const Comment: React.FC<CommentData> = ({
 
   const handleThumbsUp = () => {
     setIsThumbsUp(!isThumbsUp);
-    // If thumbs up, ensure thumbs down is not active
     if (!isThumbsUp) {
       setIsThumbsDown(false);
     }
@@ -109,7 +101,6 @@ const Comment: React.FC<CommentData> = ({
 
   const handleThumbsDown = () => {
     setIsThumbsDown(!isThumbsDown);
-    // If thumbs down, ensure liked and thumbs up are not active
     if (!isThumbsDown) {
       setIsLiked(false);
       setIsThumbsUp(false);
@@ -122,7 +113,7 @@ const Comment: React.FC<CommentData> = ({
         <TouchableOpacity onPress={handleLike}>
           <Ionicons
             name={isLiked ? 'heart' : 'heart-outline'}
-            size={24} // Keeping original size for heart, can be 22 if preferred
+            size={24}
             color={isLiked ? '#FF6347' : '#888'}
             style={styles.reactionIcon}
           />
@@ -156,6 +147,12 @@ const Comment: React.FC<CommentData> = ({
 };
 
 const App: React.FC = () => {
+  const router = useRouter(); // Initialize router
+
+  const handleFabPress = () => {
+    router.push('/answerform'); // Navigate to answerform
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" backgroundColor="#87CEEB" />
@@ -187,7 +184,7 @@ const App: React.FC = () => {
           ))}
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.fab}>
+      <TouchableOpacity style={styles.fab} onPress={handleFabPress}>
         <Ionicons name="add" size={30} color="#ffd700" />
       </TouchableOpacity>
     </SafeAreaView>
@@ -197,31 +194,30 @@ const App: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F0F0F0', // Light gray background for the very back
-    paddingTop: Platform.OS === 'android' ? ReactNativeStatusBar.currentHeight : 0, // Match askaquestion
+    backgroundColor: '#F0F0F0',
+    paddingTop: Platform.OS === 'android' ? ReactNativeStatusBar.currentHeight : 0,
   },
   headerContainer: {
-    backgroundColor: '#A0E0FF', // Sky blue
+    backgroundColor: '#A0E0FF',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    // paddingVertical: 15, // We'll set paddingTop and paddingBottom explicitly
-    paddingBottom: 15, // Match askaquestion's vertical padding distribution
-    paddingTop: Platform.OS === 'ios' ? 40 : 15, // Match askaquestion
+    paddingBottom: 15,
+    paddingTop: Platform.OS === 'ios' ? 40 : 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0', // Matched from askaquestion
+    borderBottomColor: '#E0E0E0',
   },
-  headerTitle: { // New style, similar to askaquestion
+  headerTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#333', // Dark grey text, matched from askaquestion
+    color: '#333',
   },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
-    paddingBottom: 80, // Space for FAB
+    paddingBottom: 80,
   },
   mainCard: {
     backgroundColor: '#FFFFFF',
@@ -231,7 +227,7 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     paddingHorizontal: 15,
     paddingTop: 20,
-    paddingBottom: 10, // Add some padding at the bottom of the card
+    paddingBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -259,16 +255,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   postQuestionText: {
-    flex: 1, // Take available space
+    flex: 1,
     fontSize: 16,
     fontWeight: '600',
     color: '#222222',
-    marginRight: 10, // Space before likes
+    marginRight: 10,
   },
   likesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF0F0', // Light red background for likes
+    backgroundColor: '#FFF0F0',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -286,20 +282,20 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // Align items to the top
+    alignItems: 'flex-start',
     marginVertical: 10,
   },
   reactionIcons: {
     marginRight: 10,
     alignItems: 'center',
-    paddingTop: 10, // Align with top of comment bubble content
+    paddingTop: 10,
   },
   reactionIcon: {
-    marginBottom: 12, // Space between reaction icons
+    marginBottom: 12,
   },
   commentBubble: {
     flex: 1,
-    backgroundColor: '#E6FFE6', // Light green
+    backgroundColor: '#E6FFE6',
     borderRadius: 15,
     padding: 12,
   },
@@ -313,7 +309,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333333',
     marginLeft: 8,
-    flexShrink: 1, // Allow text to wrap
+    flexShrink: 1,
   },
   commentText: {
     fontSize: 14,
@@ -324,7 +320,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 25,
     bottom: 50,
-    backgroundColor: '#141330', // Dark blue
+    backgroundColor: '#141330',
     width: 60,
     height: 60,
     borderRadius: 30,

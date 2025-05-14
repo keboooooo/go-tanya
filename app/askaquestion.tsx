@@ -46,11 +46,11 @@ export default function App() {
 
   const handleSubmit = () => {
     if (!title.trim()) {
-      Alert.alert('Validation Error', 'Title is required.');
+      Alert.alert('Error', 'Title is required.');
       return;
     }
     if (!description.trim()) {
-      Alert.alert('Validation Error', 'Description is required.');
+      Alert.alert('Error', 'Description is required.');
       return;
     }
     // Handle submission logic here

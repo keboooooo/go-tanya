@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router"; // Import useRouter
 import React, { useState } from "react";
 import {
   Platform,
@@ -93,32 +94,40 @@ const AnsweredS_PER_PAGE = 5;
 
 // --- Answered Card Component ---
 const AnsweredCard: React.FC<{ item: AnsweredItem }> = ({ item }) => {
+  const router = useRouter(); // Initialize router
+
+  const handleCardPress = () => {
+    router.push('/questionform'); // Navigate to questionform
+  };
+
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.cardHeaderLeft}>
-          <Ionicons
-            name="person-circle-outline"
-            size={30}
-            color="#555"
-            style={styles.avatarPlaceholder}
-          />
-          <Text style={styles.cardTitle}>{item.title}</Text>
-        </View>
-        <View style={styles.likesContainer}>
-          <Ionicons name="heart" size={20} color="#FF6347" />
-          <Text style={styles.likesText}>{item.likes}</Text>
-        </View>
-      </View>
-      <View style={styles.cardBody}>
-        {item.imagePlaceholder && (
-          <View style={styles.imagePlaceholderContainer}>
-            <Ionicons name="image-outline" size={60} color="#B0B0B0" />
+    <TouchableOpacity onPress={handleCardPress} activeOpacity={0.7}>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardHeaderLeft}>
+            <Ionicons
+              name="person-circle-outline"
+              size={30}
+              color="#555"
+              style={styles.avatarPlaceholder}
+            />
+            <Text style={styles.cardTitle}>{item.title}</Text>
           </View>
-        )}
-        <Text style={styles.cardBodyText}>{item.body}</Text>
+          <View style={styles.likesContainer}>
+            <Ionicons name="heart" size={20} color="#FF6347" />
+            <Text style={styles.likesText}>{item.likes}</Text>
+          </View>
+        </View>
+        <View style={styles.cardBody}>
+          {item.imagePlaceholder && (
+            <View style={styles.imagePlaceholderContainer}>
+              <Ionicons name="image-outline" size={60} color="#B0B0B0" />
+            </View>
+          )}
+          <Text style={styles.cardBodyText}>{item.body}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
