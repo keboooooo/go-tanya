@@ -2,14 +2,14 @@
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'; // Added AntDesign
 import React, { useState } from 'react'; // Removed useEffect as it's not used here for now
 import {
-    FlatList, // Added FlatList
-    Platform,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  FlatList, // Added FlatList
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 // Define a type for our question items (copied from searchaquestion-1-2.tsx)
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
-    backgroundColor: '#A0D2EB', // Light blue
+    backgroundColor: '#A0E0FF', // Light blue
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

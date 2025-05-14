@@ -65,25 +65,34 @@ const RECENT_ANSWERED_DATA: QuestionItem[] = [
 // --- Reusable Components defined in the same file ---
 
 // Question Card Component
-const QuestionCard: React.FC<{ item: QuestionItem }> = ({ item }) => (
-  <TouchableOpacity
-    style={styles.card}
-    onPress={() => console.log(`Card pressed: ${item.title}`)}
-    activeOpacity={0.7} // This makes the press animation more subtle
-  >
-    <View style={styles.cardHeader}>
-      <Ionicons name="person-circle" size={32} color="#4A4A4A" />
-      <Text style={styles.cardTitle}>{item.title}</Text>
-      <View style={styles.cardLikesContainer}>
-        <Ionicons name="heart" size={18} color="#FF6347" />
-        <Text style={styles.cardLikesText}> {item.likes}</Text>
+const QuestionCard: React.FC<{ item: QuestionItem }> = ({ item }) => {
+  const router = useRouter(); // Initialize router for navigation within the card
+
+  const handleCardPress = () => {
+    // Navigate to questionform without any parameters
+    router.push('/questionform');
+  };
+
+  return (
+    <TouchableOpacity
+      style={styles.card}
+      onPress={handleCardPress} // Updated onPress handler
+      activeOpacity={0.7}
+    >
+      <View style={styles.cardHeader}>
+        <Ionicons name="person-circle" size={32} color="#4A4A4A" />
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        <View style={styles.cardLikesContainer}>
+          <Ionicons name="heart" size={18} color="#FF6347" />
+          <Text style={styles.cardLikesText}> {item.likes}</Text>
+        </View>
       </View>
-    </View>
-    <Text style={styles.cardText} numberOfLines={3} ellipsizeMode="tail">
-      {item.text}
-    </Text>
-  </TouchableOpacity>
-);
+      <Text style={styles.cardText} numberOfLines={3} ellipsizeMode="tail">
+        {item.text}
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
 // Section Component for "Recent Question" and "Recent Answered"
 const Section: React.FC<{ title: string; data: QuestionItem[] }> = ({
