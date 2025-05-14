@@ -1,32 +1,98 @@
 // App.tsx (or a new component file, e.g., SearchScreen.tsx)
-import { Feather, Ionicons } from '@expo/vector-icons'; // Feather for search icon
-import { useRouter } from 'expo-router'; // Import useRouter
-import React, { useState } from 'react';
+import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'; // Added AntDesign
+import React, { useState } from 'react'; // Removed useEffect as it's not used here for now
 import {
+    FlatList, // Added FlatList
     Platform,
-    ScrollView,
     StatusBar,
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity, // Import TouchableOpacity
+    TouchableOpacity,
     View
 } from 'react-native';
 
-export default function searchaquestion() { // Rename to SearchScreen if it's a separate component
+// Define a type for our question items (copied from searchaquestion-1-2.tsx)
+interface QuestionItem {
+  id: string;
+  userImageUri?: string;
+  userNameOrCategory: string;
+  likes: number;
+  questionTitle: string;
+  answerSnippet: string;
+}
+
+// Sample Data (copied from searchaquestion-1-2.tsx)
+// In a real app, you'd fetch this or manage it globally
+const DUMMY_QUESTIONS: QuestionItem[] = [
+  {
+    id: '1',
+    userImageUri: 'https://i.pravatar.cc/150?img=1',
+    userNameOrCategory: 'Jaringan Komputer',
+    likes: 19,
+    questionTitle: 'apa yang dimaksud dengan mikrotik?',
+    answerSnippet:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque eget diam vitae accumsan. Fusce sed risus in nisi semper malesuada quis sed sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis efficitur mauris quis nisl interdum elementum a varius lectus.',
+  },
+  {
+    id: '2',
+    userImageUri: 'https://i.pravatar.cc/150?img=2',
+    userNameOrCategory: 'Jaringan Komputer',
+    likes: 19,
+    questionTitle: 'apa itu mikrotik?',
+    answerSnippet:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque eget diam vitae accumsan. Fusce sed risus in nisi semper malesuada quis sed sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis efficitur mauris quis nisl interdum elementum a varius lectus.',
+  },
+  {
+    id: '3',
+    userImageUri: 'https://i.pravatar.cc/150?img=3',
+    userNameOrCategory: 'Pemrograman Web',
+    likes: 25,
+    questionTitle: 'Bagaimana cara kerja React Native?',
+    answerSnippet:
+      'React Native memungkinkan Anda membangun aplikasi seluler menggunakan JavaScript dan React. Ini menjembatani ke API asli, memungkinkan kinerja yang mendekati asli.',
+  },
+];
+
+// Component for each question card (copied from searchaquestion-1-2.tsx)
+const QuestionCard: React.FC<{ item: QuestionItem }> = ({ item }) => {
+  return (
+    <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+      <View style={styles.cardHeader}>
+        <View style={[styles.cardUserImage, styles.cardUserImagePlaceholder]}>
+            <Ionicons name="person" size={18} color="#FFF" />
+        </View>
+        <Text style={styles.cardCategory}>{item.userNameOrCategory}</Text>
+        <View style={styles.cardLikesContainer}>
+          <AntDesign name="heart" size={16} color="#FF6347" />
+          <Text style={styles.cardLikesText}>{item.likes}</Text>
+        </View>
+      </View>
+      <Text style={styles.cardQuestionTitle}>{item.questionTitle}</Text>
+      <Text style={styles.cardAnswerSnippet} numberOfLines={3} ellipsizeMode="tail">
+        {item.answerSnippet}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+export default function SearchaquestionFix() {
   const [searchText, setSearchText] = useState('');
-  const router = useRouter(); // Initialize router
+  const [filteredQuestions, setFilteredQuestions] = useState<QuestionItem[]>([]);
+  // const router = useRouter(); // No longer needed for navigation here
 
   const handleSearch = () => {
-    if (searchText.trim() === '') {
-      // Optionally, handle empty search string (e.g., show an alert)
+    const query = searchText.trim().toLowerCase();
+    if (query === '') {
+      setFilteredQuestions([]); // Clear results if search is empty
       return;
     }
-    // Navigate to searchaquestion-1-2 and pass the searchText as a query parameter
-    router.push({
-      pathname: '/searchaquestion-1-2',
-      params: { query: searchText },
-    });
+    const results = DUMMY_QUESTIONS.filter(question =>
+      question.questionTitle.toLowerCase().includes(query) ||
+      question.answerSnippet.toLowerCase().includes(query) ||
+      question.userNameOrCategory.toLowerCase().includes(query)
+    );
+    setFilteredQuestions(results);
   };
 
   return (
@@ -35,8 +101,9 @@ export default function searchaquestion() { // Rename to SearchScreen if it's a 
       
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Go-{"\n"}Tanya</Text>
-        {/* You can make this TouchableOpacity if it's supposed to navigate */}
-        <Ionicons name="person-circle" size={50} color="#333" />
+        <TouchableOpacity> {/* Assuming this might be for a profile screen later */}
+            <Ionicons name="person-circle" size={50} color="#333" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.searchContainer}>
@@ -47,25 +114,32 @@ export default function searchaquestion() { // Rename to SearchScreen if it's a 
             placeholderTextColor="#A0A0A0"
             value={searchText}
             onChangeText={setSearchText}
-            onSubmitEditing={handleSearch} // Trigger search on keyboard submit
+            onSubmitEditing={handleSearch}
             returnKeyType="search"
           />
-          <TouchableOpacity onPress={handleSearch}> {/* Make icon pressable */}
+          <TouchableOpacity onPress={handleSearch}>
             <Feather name="search" size={22} color="#777" style={styles.searchIcon} />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Content Area - currently empty as per the design */}
-      <ScrollView style={styles.contentArea}>
-        {/* 
-          You can add list items or other content here later.
-          For example:
-          <Text style={{ textAlign: 'center', marginTop: 50, color: '#888' }}>
-            Search results will appear here.
-          </Text> 
-        */}
-      </ScrollView>
+      <FlatList
+        data={filteredQuestions}
+        renderItem={({ item }) => <QuestionCard item={item} />}
+        keyExtractor={(item) => item.id}
+        style={styles.listContainer} // Use new styles
+        contentContainerStyle={styles.listContentContainer} // Use new styles
+        ListEmptyComponent={
+          // Show message only if a search has been attempted (searchText is not empty but no results)
+          // Or a generic message if nothing is typed yet and filteredQuestions is empty.
+          // For simplicity, let's show a message if filteredQuestions is empty AFTER a search might have occurred.
+          searchText.trim() !== '' && filteredQuestions.length === 0 ? (
+            <Text style={styles.emptyListText}>No results found for "{searchText}"</Text>
+          ) : (
+            <Text style={styles.emptyListText}>Enter a search term to see results.</Text>
+          )
+        }
+      />
     </View>
   );
 }
@@ -73,7 +147,7 @@ export default function searchaquestion() { // Rename to SearchScreen if it's a 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // White background for the main content area below search
+    backgroundColor: '#F0F2F5', // Changed to light grey for consistency with results page
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
@@ -95,9 +169,9 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingHorizontal: 15,
     paddingVertical: 10,
-    backgroundColor: '#FFFFFF', // Search bar sits on a white background strip
-    borderBottomWidth: 1, // Optional: if you want a line below search bar too
-    borderBottomColor: '#F0F0F0', // Lighter border for search bar area
+    backgroundColor: '#FFFFFF', 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#F0F0F0', 
   },
   searchBar: {
     flexDirection: 'row',
@@ -111,14 +185,82 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#333',
-    paddingVertical: 8, // Adjust vertical padding as needed
+    paddingVertical: 8, 
   },
   searchIcon: {
-    marginLeft: 10, // Space between text input and icon
+    marginLeft: 10, 
   },
-  contentArea: {
+  // Removed contentArea, replaced by listContainer and specific list styles
+  // listContainer and card styles (copied and adapted from searchaquestion-1-2.tsx)
+  listContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Ensuring the rest of the screen is white
-    // Add padding if needed, e.g., padding: 20,
+    // backgroundColor: '#F0F2F5', // Already set in safeArea
+  },
+  listContentContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  emptyListText: {
+    textAlign: 'center',
+    marginTop: 50,
+    fontSize: 16,
+    color: '#666',
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  cardUserImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
+    backgroundColor: '#D0D0D0',
+  },
+  cardUserImagePlaceholder: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#B0B0B0',
+  },
+  cardCategory: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  cardLikesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardLikesText: {
+    fontSize: 14,
+    color: '#FF6347',
+    marginLeft: 5,
+    fontWeight: '500',
+  },
+  cardQuestionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#222',
+    marginBottom: 6,
+  },
+  cardAnswerSnippet: {
+    fontSize: 14,
+    color: '#555',
+    lineHeight: 20,
   },
 });
