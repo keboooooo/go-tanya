@@ -333,10 +333,34 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
 // --- Screen: SettingsScreen ---
 const SettingsScreen = () => {
-  const router = useRouter(); // If needed for navigation from modals, or keep for consistency
+  const router = useRouter(); 
   const [isEmailModalVisible, setEmailModalVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const currentUserEmail = "user@example.com"; // Placeholder
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Log Out", // Title
+      "Are you sure you want to log out?", // Message
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Logout cancelled"),
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log("Logging out...");
+            // Add any actual logout logic here (e.g., clearing tokens, user state)
+            router.replace("/loginpage"); // Navigate to login page. Adjust route if needed.
+          },
+          style: "destructive", // iOS only, makes the text red
+        },
+      ],
+      { cancelable: false } // Prevents dismissing by tapping outside on Android
+    );
+  };
 
   // Dummy data for the settings list - MOVED INSIDE THE COMPONENT
   const settingsData = [
@@ -352,8 +376,8 @@ const SettingsScreen = () => {
       id: 'privacy_policy_section',
       title: 'Privacy Policy',
       items: [
-        { id: 'terms_of_service', label: 'Terms of Service', onPress: () => Alert.alert('Navigation', 'Show Terms of Service') },
-        { id: 'privacy_policy_doc', label: 'Privacy Policy', onPress: () => Alert.alert('Navigation', 'Show Privacy Policy') },
+        { id: 'terms_of_service', label: 'Terms of Service', onPress: () => router.push('/termsofservices') }, 
+        { id: 'privacy_policy_doc', label: 'Privacy Policy', onPress: () => router.push('/privacypolicy') }, // Updated onPress
       ],
     },
     {
@@ -361,7 +385,7 @@ const SettingsScreen = () => {
       title: 'App Settings',
       items: [
         { id: 'change_language', label: 'Change Language', onPress: () => Alert.alert('Navigation', 'Navigate to Change Language') },
-        { id: 'log_out', label: 'Log Out', onPress: () => Alert.alert('Action', 'Log Out Tapped'), isDestructive: true },
+        { id: 'log_out', label: 'Log Out', onPress: handleLogout, isDestructive: true },
       ],
     },
   ];
