@@ -92,6 +92,10 @@ const ProfilePage: React.FC = () => {
     router.push("/landingpage");
   };
 
+  const handleSettingsPress = () => {
+    router.push("/settingspage"); // Navigate to settingpage
+  };
+
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
@@ -114,7 +118,7 @@ const ProfilePage: React.FC = () => {
                 Go-{"\n"}
                 Tanya
               </Text>
-              <TouchableOpacity onPress={() => console.log("Settings pressed")}>
+              <TouchableOpacity onPress={handleSettingsPress}>
                 <Ionicons name="settings-outline" size={36} color="black" />
               </TouchableOpacity>
             </View>
