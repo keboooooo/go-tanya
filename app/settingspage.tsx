@@ -330,12 +330,87 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   );
 };
 
+// --- Change Language Modal Component ---
+interface LanguageOption {
+  code: string;
+  name: string;
+  flag: string;
+}
+
+interface ChangeLanguageModalProps {
+  visible: boolean;
+  onClose: () => void;
+  currentLanguage: string;
+  onSelectLanguage: (languageCode: string) => void;
+}
+
+const ChangeLanguageModal: React.FC<ChangeLanguageModalProps> = ({
+  visible,
+  onClose,
+  currentLanguage,
+  onSelectLanguage,
+}) => {
+  const languages: LanguageOption[] = [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
+  ];
+
+  const handleLanguagePress = (languageCode: string) => {
+    onSelectLanguage(languageCode);
+    // onClose(); // Optionally close modal immediately after selection
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={[styles.modalContent, styles.languageModalContent]}>
+          <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
+            {/* Drag handle or close icon */}
+          </TouchableOpacity>
+          <Text style={styles.modalPromptStyle}>Select Language</Text>
+
+          {languages.map((lang) => (
+            <TouchableOpacity
+              key={lang.code}
+              style={[
+                styles.languageItemContainer,
+                currentLanguage === lang.code && styles.languageItemSelected,
+              ]}
+              onPress={() => handleLanguagePress(lang.code)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.languageItemFlag}>{lang.flag}</Text>
+              <Text style={styles.languageItemName}>{lang.name}</Text>
+              {currentLanguage === lang.code && (
+                <Ionicons name="checkmark-circle" size={24} color="#0A0A2A" />
+              )}
+            </TouchableOpacity>
+          ))}
+           <TouchableOpacity
+            style={[styles.actionModalButton, {marginTop: 20}]} // Add some top margin
+            onPress={onClose} // This button now just closes the modal
+          >
+            <Text style={styles.actionModalButtonText}>Done</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
 
 // --- Screen: SettingsScreen ---
 const SettingsScreen = () => {
   const router = useRouter(); 
   const [isEmailModalVisible, setEmailModalVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+  const [isLanguageModalVisible, setLanguageModalVisible] = useState(false); // State for language modal
+  const [currentLanguage, setCurrentLanguage] = useState('en'); // Default language 'en' for English
   const currentUserEmail = "user@example.com"; // Placeholder
 
   const handleLogout = () => {
@@ -362,6 +437,14 @@ const SettingsScreen = () => {
     );
   };
 
+  const handleSelectLanguage = (languageCode: string) => {
+    setCurrentLanguage(languageCode);
+    console.log("Selected language:", languageCode);
+    // Here, you would typically integrate with your i18n library (e.g., i18next.changeLanguage(languageCode))
+    // For now, we just update the state and log it.
+    // The modal will be closed by its "Done" button.
+  };
+
   // Dummy data for the settings list - MOVED INSIDE THE COMPONENT
   const settingsData = [
     {
@@ -377,14 +460,14 @@ const SettingsScreen = () => {
       title: 'Privacy Policy',
       items: [
         { id: 'terms_of_service', label: 'Terms of Service', onPress: () => router.push('/termsofservices') }, 
-        { id: 'privacy_policy_doc', label: 'Privacy Policy', onPress: () => router.push('/privacypolicy') }, // Updated onPress
+        { id: 'privacy_policy_doc', label: 'Privacy Policy', onPress: () => router.push('/privacypolicy') }, 
       ],
     },
     {
       id: 'app_settings',
       title: 'App Settings',
       items: [
-        { id: 'change_language', label: 'Change Language', onPress: () => Alert.alert('Navigation', 'Navigate to Change Language') },
+        { id: 'change_language', label: 'Change Language', onPress: () => setLanguageModalVisible(true) }, // Open language modal
         { id: 'log_out', label: 'Log Out', onPress: handleLogout, isDestructive: true },
       ],
     },
@@ -415,6 +498,12 @@ const SettingsScreen = () => {
       <ChangePasswordModal
         visible={isPasswordModalVisible}
         onClose={() => setPasswordModalVisible(false)}
+      />
+      <ChangeLanguageModal
+        visible={isLanguageModalVisible}
+        onClose={() => setLanguageModalVisible(false)}
+        currentLanguage={currentLanguage}
+        onSelectLanguage={handleSelectLanguage}
       />
     </View>
   );
@@ -616,5 +705,36 @@ const styles = StyleSheet.create({
     color: "#FFD700", // Gold/Yellow from profile page
     fontSize: 17,
     fontWeight: "bold",
+  },
+
+  // Language Modal Specific Styles
+  languageModalContent: {
+    // Potentially add specific padding or height adjustments if needed
+    // For now, it will inherit from modalContent
+  },
+  languageItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0', // Light border for unselected items
+    backgroundColor: '#FFFFFF',
+  },
+  languageItemSelected: {
+    borderColor: '#0A0A2A', // Darker border for selected item
+    backgroundColor: '#F0F5FF', // A very light blue to indicate selection
+  },
+  languageItemFlag: {
+    fontSize: 24, // Adjust size as needed for flag emojis
+    marginRight: 15,
+  },
+  languageItemName: {
+    fontSize: 16,
+    color: '#000000',
+    flex: 1, // Take remaining space to push checkmark to the right
   },
 });
