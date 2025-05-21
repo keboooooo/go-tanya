@@ -99,14 +99,32 @@ const ChangeEmailModal: React.FC<ChangeEmailModalProps> = ({
 }) => {
   const [newEmail, setNewEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState(""); // For verification
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false); // Added for password visibility
+
+  const isValidEmail = (email: string) => {
+    // A simple regex for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleChangeEmail = () => {
+    if (!isValidEmail(newEmail)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
+    // Add further validation if needed (e.g., check if email is already in use)
+
     console.log("New email:", newEmail, "Password for verification:", currentPassword);
     // Add logic to actually change email here
     // Potentially re-authenticate user or verify password
     setNewEmail("");
     setCurrentPassword("");
+    setShowCurrentPassword(false); // Reset on close
     onClose();
+  };
+
+  const toggleShowCurrentPassword = () => {
+    setShowCurrentPassword(!showCurrentPassword);
   };
 
   return (
@@ -114,14 +132,17 @@ const ChangeEmailModal: React.FC<ChangeEmailModalProps> = ({
       animationType="slide"
       transparent={true}
       visible={visible}
-      onRequestClose={onClose}
+      onRequestClose={() => {
+        setShowCurrentPassword(false); // Reset on close
+        onClose();
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.modalOverlay}
       >
         <View style={styles.modalContent}>
-          <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
+          <TouchableOpacity onPress={() => { setShowCurrentPassword(false); onClose();}} style={styles.modalCloseButton}>
             {/* Optional: Add a close icon or drag handle here */}
           </TouchableOpacity>
           {/* Use styles similar to modalGreeting and modalPrompt */}
@@ -155,14 +176,15 @@ const ChangeEmailModal: React.FC<ChangeEmailModalProps> = ({
               placeholderTextColor="#A9A9A9"
               value={currentPassword}
               onChangeText={setCurrentPassword}
-              secureTextEntry
+              secureTextEntry={!showCurrentPassword} // Toggle secureTextEntry
             />
-            <Ionicons
-              name="lock-closed-outline"
-              size={22}
-              color="#555"
-              style={styles.inputIcon}
-            />
+            <TouchableOpacity onPress={toggleShowCurrentPassword} style={styles.inputIconTouchable}>
+              <Ionicons
+                name={showCurrentPassword ? "eye-off-outline" : "eye-outline"} // Change icon based on state
+                size={24}
+                color="#555"
+              />
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -190,6 +212,10 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
 
   const handleChangePassword = () => {
     if (newPassword !== confirmNewPassword) {
@@ -201,6 +227,20 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     setCurrentPassword("");
     setNewPassword("");
     setConfirmNewPassword("");
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmNewPassword(false);
+    onClose();
+  };
+
+  const toggleShowCurrentPassword = () => setShowCurrentPassword(!showCurrentPassword);
+  const toggleShowNewPassword = () => setShowNewPassword(!showNewPassword);
+  const toggleShowConfirmNewPassword = () => setShowConfirmNewPassword(!showConfirmNewPassword);
+
+  const handleClose = () => {
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmNewPassword(false);
     onClose();
   };
 
@@ -209,14 +249,14 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       animationType="slide"
       transparent={true}
       visible={visible}
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.modalOverlay}
       >
         <View style={styles.modalContent}>
-          <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
+          <TouchableOpacity onPress={handleClose} style={styles.modalCloseButton}>
             {/* Optional: Add a close icon or drag handle here */}
           </TouchableOpacity>
           <Text style={styles.modalPromptStyle}>Set a New Password</Text>
@@ -229,14 +269,15 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               placeholderTextColor="#A9A9A9"
               value={currentPassword}
               onChangeText={setCurrentPassword}
-              secureTextEntry
+              secureTextEntry={!showCurrentPassword}
             />
-            <Ionicons
-              name="lock-closed-outline"
-              size={22}
-              color="#555"
-              style={styles.inputIcon}
-            />
+            <TouchableOpacity onPress={toggleShowCurrentPassword} style={styles.inputIconTouchable}>
+              <Ionicons
+                name={showCurrentPassword ? "eye-off-outline" : "eye-outline"}
+                size={24}
+                color="#555"
+              />
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.inputLabel}>New Password</Text>
@@ -247,14 +288,15 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               placeholderTextColor="#A9A9A9"
               value={newPassword}
               onChangeText={setNewPassword}
-              secureTextEntry
+              secureTextEntry={!showNewPassword}
             />
-            <Ionicons
-              name="key-outline"
-              size={22}
-              color="#555"
-              style={styles.inputIcon}
-            />
+            <TouchableOpacity onPress={toggleShowNewPassword} style={styles.inputIconTouchable}>
+              <Ionicons
+                name={showNewPassword ? "eye-off-outline" : "eye-outline"}
+                size={24}
+                color="#555"
+              />
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.inputLabel}>Confirm New Password</Text>
@@ -265,14 +307,15 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               placeholderTextColor="#A9A9A9"
               value={confirmNewPassword}
               onChangeText={setConfirmNewPassword}
-              secureTextEntry
+              secureTextEntry={!showConfirmNewPassword}
             />
-            <Ionicons
-              name="key-outline"
-              size={22}
-              color="#555"
-              style={styles.inputIcon}
-            />
+            <TouchableOpacity onPress={toggleShowConfirmNewPassword} style={styles.inputIconTouchable}>
+              <Ionicons
+                name={showConfirmNewPassword ? "eye-off-outline" : "eye-outline"}
+                size={24}
+                color="#555"
+              />
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -529,8 +572,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000000",
   },
-  inputIcon: {
+  inputIcon: { // Style for non-touchable icons like email
     marginLeft: 10,
+  },
+  inputIconTouchable: { // Style for the touchable eye icon
+    padding: 5, // Add some padding to make it easier to press
+    marginLeft: 5,
   },
   actionModalButton: {
     backgroundColor: "#0A0A2A", // Matched with profilepage.tsx button
