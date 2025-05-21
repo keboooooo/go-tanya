@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end", // Aligns modal to bottom
-    backgroundColor: "rgba(0, 0, 0, 0.0)", // Transparent overlay, blur handles the effect
+    backgroundColor: "rgba(0, 0, 0, 0.4)", // Transparent overlay, blur handles the effect
   },
   modalContent: {
     backgroundColor: "white",
